@@ -1,7 +1,8 @@
 int linePosition()
 {
     int returnValue = 0;
-    bool online = false;
+    // bool online = false;
+    lineOnline = false;
     int avg = 0;
     int sum = 0;
     int sensorValues[8];
@@ -10,7 +11,7 @@ int linePosition()
         sensorValues[i] = map(adc.readADC(i), adcMin[i], adcMax[i], 0, 255);
         sensorValues[i] = constrain(sensorValues[i], 0, 255);
         if (sensorValues[i] > lineThreshold) // threshold
-            online = true;
+            lineOnline = true;
         if (sensorValues[i] > noiseThreshold)
         { // noise
             avg += sensorValues[i] * i * 100;
@@ -18,7 +19,7 @@ int linePosition()
         }
     }
 
-    if (!online)
+    if (!lineOnline)
     {
         if (lastPosition > 400)
             returnValue = 700;
