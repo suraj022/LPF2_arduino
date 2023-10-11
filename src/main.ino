@@ -28,9 +28,12 @@ void setup()
   pinMode(A3, INPUT_PULLUP);
   pinMode(A4, INPUT_PULLUP);
 
+<<<<<<< HEAD
   pinMode(A0, INPUT_PULLUP);
   pinMode(A2, INPUT_PULLUP);
 
+=======
+>>>>>>> 726a68bca31aae407f27fc7bfb5b5a083c52055b
   // LPF2 emulator intialization
   sensor.enable_debug();
   sensor.create_mode("VALUES", true, DATA8, 7, 5, 0, 0.0f, 512.0f, 0.0f, 1024.0f, 0.0f, 100.0f, "A", 0, ABSOLUTE);
@@ -43,6 +46,7 @@ void setup()
   adc.begin(4, 6, 5, 7);
 
   // Initialize TCS34725 colour sensor
+<<<<<<< HEAD
   // if (tcs.begin())
   // {
   //   SerialUSB.println("Found sensor");
@@ -54,11 +58,24 @@ void setup()
   //     ;
   // }
 
+=======
+  if (tcs.begin())
+  {
+    Serial.println("Found sensor");
+  }
+  else
+  {
+    Serial.println("No TCS34725 found ... check your connections");
+    while (1)
+      ;
+  }
+>>>>>>> 726a68bca31aae407f27fc7bfb5b5a083c52055b
   delay(200);
 }
 //-------------------------------------------------------------------
 void loop()
 {
+<<<<<<< HEAD
   // tcs.getRawData(&r, &g, &b, &c);
   int _error = linePosition();
   int sensorValues[8];
@@ -91,6 +108,36 @@ void loop()
   {
     intersectionR = true;
   }
+=======
+  tcs.getRawData(&r, &g, &b, &c);
+  int _error = linePosition();
+  int sensorValues[8];
+  for (int i = 0; i < 8; i++)
+  {
+    sensorValues[i] = map(adc.readADC(i), adcMin[i], adcMax[i], 0, 255);
+    sensorValues[i] = constrain(sensorValues[i], 0, 255);
+  }
+  if (!calibrate)
+  {
+    String x = "";
+    for (int i = 0; i < 7; i++)
+      x += (String)((sensorValues[i] > lineThreshold) ? 1 : 0) + ",";
+    x += (String)((sensorValues[7] > lineThreshold) ? 1 : 0);
+    x += "\t\t";
+    x += (String)_error;
+    SerialUSB.println(x);
+  }
+
+  if ((((sensorValues[0] > lineThreshold) ? true : false) and
+       ((sensorValues[1] > lineThreshold) ? true : false) and
+       ((sensorValues[2] > lineThreshold) ? true : false)) or
+      (((sensorValues[5] > lineThreshold) ? true : false) and
+       ((sensorValues[6] > lineThreshold) ? true : false) and
+       ((sensorValues[7] > lineThreshold) ? true : false)))
+  {
+    intersection = true;
+  }
+>>>>>>> 726a68bca31aae407f27fc7bfb5b5a083c52055b
 
   handleCalibration();
 
@@ -103,6 +150,7 @@ void loop()
     if (mode == 0)
     {
       byte bb[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+<<<<<<< HEAD
       byte byteZero = 0;
       bitWrite(byteZero, 0, digitalRead(A4));
       bitWrite(byteZero, 1, calibrate);
@@ -120,6 +168,11 @@ void loop()
       bb[4] = constrain(b, 0, 255);
       intersectionL = false;
       intersectionR = false;
+=======
+      bb[1] = map(_error, 0, 700, 0, 255);
+      bb[0] = digitalRead(A4) + 2 * calibrate + 4 * intersection;
+      intersection = false;
+>>>>>>> 726a68bca31aae407f27fc7bfb5b5a083c52055b
       sensor.send_data8(bb, 8);
     }
     if (mode == 1)
