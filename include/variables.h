@@ -10,6 +10,7 @@ int lastPosition = 0;
 int errDeadzone = 10;
 bool calibrate = false;
 bool calibrate_prev = false;
+
 bool intersectionL = false;
 bool intersectionR = false;
 bool lineOnline = false;
